@@ -6,7 +6,7 @@ import SwiftUI
 public struct ConnectingAppExtensionConfiguration: AppExtensionConfiguration {
 	let accepter: ConnectionAccepter
 
-	public init(_ handler: @escaping ConnectionHandler) {
+	public init(_ handler: @escaping ExtendableConnectionHandler) {
 		self.accepter = ConnectionAccepter(handler)
 	}
 
@@ -15,14 +15,24 @@ public struct ConnectingAppExtensionConfiguration: AppExtensionConfiguration {
 	}
 }
 
+
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public protocol ConnectableExtension: AppExtension {
+public protocol AnyConnectableExtension: AppExtension {}
+
+
+@available(macOS 26.0, iOS 26.0, *)
+public protocol XPCConnectableExtension: AnyConnectableExtension {
+	var configuration: ConnectionHandler{get}
+}
+
+@available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+public protocol ConnectableExtension: AnyConnectableExtension {
 	func acceptConnection(_ connection: NSXPCConnection) throws
 }
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 public extension ConnectableExtension {
-	/// The global, per-exension configuration
+	/// The global, per-extension configuration
 	///
 	/// This configuration applies to the extension process, and
 	/// its connection corresponds to `AppExtensionProcess`. This
@@ -40,6 +50,6 @@ public extension ConnectableExtension {
 
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
-public protocol NewConnectableExtension: AppExtension {
+public protocol NewConnectableExtension: ConnectableExtension {
 	func acceptConnection(_ connection: NSXPCConnection) throws
 }

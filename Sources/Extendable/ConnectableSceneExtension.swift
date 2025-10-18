@@ -20,3 +20,21 @@ public extension ConnectableSceneExtension {
 		return AppExtensionSceneConfiguration(scene, configuration: globalConfiguration)
 	}
 }
+
+
+/// Defines an interface between a host and view-based extension.
+///
+/// This type provides more structure to a view-based extension.
+@available(macOS 26.0, iOS 26.0, *)
+public protocol XPCConnectableSceneExtension<Content>: XPCConnectableExtension {
+	associatedtype Content : AppExtensionScene
+
+	var scene: Content { get }
+}
+
+@available(macOS 26.0, iOS 26.0, *)
+public extension XPCConnectableSceneExtension {
+	var configuration: AppExtensionSceneConfiguration {
+		return AppExtensionSceneConfiguration(scene, configuration: configuration)
+	}
+}

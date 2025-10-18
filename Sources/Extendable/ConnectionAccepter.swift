@@ -1,14 +1,14 @@
 import Foundation
 import os.log
 
-public typealias ConnectionHandler = (NSXPCConnection) throws -> Void
+public typealias ExtendableConnectionHandler = (NSXPCConnection) throws -> Void
 
 struct ConnectionAccepter {
 	private let logger = Logger(subsystem: "com.chimehq.Extendable", category: "ConnectionAccepter")
 
-	let handler: ConnectionHandler
+	let handler: ExtendableConnectionHandler
 
-	init(_ handler: @escaping ConnectionHandler) {
+	init(_ handler: @escaping ExtendableConnectionHandler) {
 		self.handler = handler
 	}
 
